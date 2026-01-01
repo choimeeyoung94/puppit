@@ -1,0 +1,49 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+LICENSE
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.example
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend specific
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Frontend specific
+frontend/node_modules/
+frontend/build/
+frontend/.eslintcache
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+

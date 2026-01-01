@@ -1,1 +1,37 @@
-/.metadata/
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Application specific
+application-secret.properties
+application-secret.yml
+
+# Old project files (to be removed after migration)
+/src/
+/target/
+/pom.xml
+/Dockerfile
+index.html

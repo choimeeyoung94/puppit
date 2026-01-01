@@ -1,0 +1,2 @@
+INDEX VERSION 1.4+C:\dev\semi_team_project\puppit\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2677052356.index

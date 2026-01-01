@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: puppit-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: db_puppit
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/src/main/resources/SCHEMA.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - puppit-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: puppit-backend-dev
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILE: dev
+      DB_URL: jdbc:mysql://mysql:3306/db_puppit?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      DB_USERNAME: user
+      DB_PASSWORD: user
+      AWS_S3_ACCESS_KEY: ${AWS_S3_ACCESS_KEY:-}
+      AWS_S3_SECRET_KEY: ${AWS_S3_SECRET_KEY:-}
+      AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-}
+      AWS_S3_REGION: ${AWS_S3_REGION:-ap-northeast-2}
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID:-}
+      KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI:-http://localhost:3000/oauth/kakao/callback}
+      IAMPORT_KEY: ${IAMPORT_KEY:-}
+      IAMPORT_SECRET: ${IAMPORT_SECRET:-}
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:80
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/logs:/app/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - puppit-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: puppit-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080/api
+      - REACT_APP_WS_URL=ws://localhost:8080/api
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    networks:
+      - puppit-network
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  puppit-network:
+    driver: bridge
+
