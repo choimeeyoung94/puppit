@@ -35,3 +35,4 @@ application-secret.yml
 /pom.xml
 /Dockerfile
 index.html
+/.metadata/

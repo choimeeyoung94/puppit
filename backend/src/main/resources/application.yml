@@ -7,7 +7,7 @@ spring:
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL:jdbc:mysql://localhost:3306/db_puppit?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/db_puppit?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
     username: ${DB_USERNAME:user}
     password: ${DB_PASSWORD:user}
     hikari:
@@ -35,10 +35,6 @@ mybatis:
   config-location: classpath:mybatis/config/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
   type-aliases-package: org.puppit.model.dto
-  configuration:
-    map-underscore-to-camel-case: true
-    default-fetch-size: 100
-    default-statement-timeout: 30
 
 # Server Configuration
 server:
